@@ -20,7 +20,7 @@ public class CommandAlgaeIntake extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        m_algaeArm.IntakeAlgae(0);
+        // m_algaeArm.IntakeAlgae(0);
     }
     
 }

@@ -14,7 +14,7 @@ public class CommandAlgaeOuttake extends Command {
 
     @Override
     public void execute() {
-        m_algaeArm.IntakeAlgae(-1 * Throttles.kCoralIntakeThrottle);
+        m_algaeArm.IntakeAlgae(-1 * Throttles.kAlgaeIntakeThrottle);
     }
 
     @Override
