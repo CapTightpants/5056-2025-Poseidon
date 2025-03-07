@@ -4,15 +4,20 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
- * constants. This class should not be used for any other purPosee. All constants
+ * constants. This class should not be used for any other purPosee. All
+ * constants
  * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
@@ -46,82 +51,96 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-      // Swerve Drive
+    // Swerve Drive
     public static final int kFrontLeftDrivingCanId = 10;
     public static final int kFrontRightDrivingCanId = 12;
     public static final int kRearRightDrivingCanId = 14;
     public static final int kRearLeftDrivingCanId = 16;
-      // Swerve Steer
+    // Swerve Steer
     public static final int kFrontLeftTurningCanId = 11;
     public static final int kFrontRightTurningCanId = 13;
     public static final int kRearRightTurningCanId = 15;
     public static final int kRearLeftTurningCanId = 17;
 
-
+    // Autonomous
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
+    public static RobotConfig kAutonConfig = new RobotConfig(43.454, 6.883, new ModuleConfig(
+        0.031,
+        4.8,
+        1.2,
+        DCMotor.getNEO(1).withReduction(kBackLeftChassisAngularOffset),
+        38, 1), new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
   }
 
-public static final class SystemConstants {
-        // Lift
-        public static final int kLeftLiftCanId = 1;    
-        public static final int kRightLiftCanId = 8; 
-  
-        // Arms
-        public static final int kHarpoonCanId = 7;
-        public static final int kHarpoonReelCanId = 6;
-        public static final int kCoralArmCanId = 2;
-        public static final int kCoralIntakeCanId = 3;
-        public static final int kAlgaeArmCanId = 5;
-        public static final int kAlgaeIntakeCanId = 4;
-        
-        // Sensors
-        public static final int kGyroCanId = 20;
-        public static final boolean kGyroReversed = false;
-        public static final int kCoralLimitDIO = 0;
-        
-        // Other CAN IDs
-        public static final int kPduCanId = 30;
-      }
+  public static final class SystemConstants {
+    // Lift
+    public static final int kLeftLiftCanId = 1;
+    public static final int kRightLiftCanId = 8;
+
+    // Arms
+    public static final int kHarpoonCanId = 7;
+    public static final int kHarpoonReelCanId = 6;
+    public static final int kCoralArmCanId = 2;
+    public static final int kCoralIntakeCanId = 3;
+    public static final int kAlgaeArmCanId = 5;
+    public static final int kAlgaeIntakeCanId = 4;
+
+    // Sensors
+    public static final int kGyroCanId = 20;
+    public static final boolean kGyroReversed = false;
+    public static final int kCoralLimitDIO = 0;
+
+    // Other CAN IDs
+    public static final int kPduCanId = 30;
+  }
 
   public static final class Setpoints {
-     public static enum kLiftPosition {
-        Start(0.75, 8.5, 1.1),
-        Base(0.75,  9.5, 1.1),
-        Stage1(2.5, 7.8, 1.2),
-        Stage2(4.25, 7.8, 3.6),
-        Stage3(7.0, 7.8, 1.2),
-        algae2(6.0, 8.5, 3.6),
-        processor(0.75, 8.5, 3.4),
-        Other(null, null, null);
+    public static enum kLiftPosition {
+      Start(0.75, 8.5, 1.1),
+      Base(0.75, 9.5, 1.1),
+      Stage1(2.5, 7.8, 1.2),
+      Stage2(4.25, 7.8, 3.6),
+      Stage3(7.0, 7.8, 1.2),
+      algae2(6.0, 8.5, 3.6),
+      processor(0.75, 8.5, 3.4),
+      Other(null, null, null);
 
-        public final Double LiftPose;
-        public final Double CoralPoseDeg;
-        public final Double AlgaePoseDeg;
-        kLiftPosition(Double LiftPose, Double CoralPoseDeg, Double AlgaePoseDeg) {
-          this.LiftPose = LiftPose;
-          this.CoralPoseDeg = CoralPoseDeg;
-          this.AlgaePoseDeg = AlgaePoseDeg;
+      public final Double LiftPose;
+      public final Double CoralPoseDeg;
+      public final Double AlgaePoseDeg;
+
+      kLiftPosition(Double LiftPose, Double CoralPoseDeg, Double AlgaePoseDeg) {
+        this.LiftPose = LiftPose;
+        this.CoralPoseDeg = CoralPoseDeg;
+        this.AlgaePoseDeg = AlgaePoseDeg;
       }
-     }
-     public static enum kHarpoonPosition {
+    }
+
+    public static enum kHarpoonPosition {
       Start(0.0),
       Deploy(0.0),
       Intake(0.0),
       Other(null);
 
       public final Double Degrees;
+
       kHarpoonPosition(Double Degrees) {
         this.Degrees = Degrees;
       }
-     }
+    }
   }
-      
-      public static final class ModuleConstants {
-        // The MAXSwerve module can be configured with one of three pinion gears: 12T,
-        // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
-        // more teeth will result in a robot that drives faster).
-        public static final int kDrivingMotorPinionTeeth = 14;
-        
-        // Calculations required for driving motor conversion factors and feed forward
+
+  public static final class ModuleConstants {
+    // The MAXSwerve module can be configured with one of three pinion gears: 12T,
+    // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
+    // more teeth will result in a robot that drives faster).
+    public static final int kDrivingMotorPinionTeeth = 14;
+
+    // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
     public static final double kWheelDiameterMeters = 0.0762;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
