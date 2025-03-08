@@ -19,13 +19,10 @@ public class CommandPositionAlgae extends Command {
     public void execute() {
         m_algaeArm.AlgaeArmPosition(m_algaePosition);
         SmartDashboard.putNumber("Algae Commanded", m_algaePosition.AlgaePoseDeg);
-        if (m_algaeArm.getAlgaePosition(m_algaePosition)) {
-            isFinished();
-        };
     }  
 
     @Override public boolean isFinished() {
-        return true;
+        return m_algaeArm.getAlgaePosition(m_algaePosition);
     }
 
 }
