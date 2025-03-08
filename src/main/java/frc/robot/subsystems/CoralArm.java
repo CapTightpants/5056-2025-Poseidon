@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
@@ -41,6 +42,15 @@ public class CoralArm extends SubsystemBase {
         ? 0
         : setpoint
     );
+    }
+
+    /**
+     * Checks to verify that the system is in the desired position.
+     * @param position The position to check the system against.
+     * @return Returns true if the system is in position.
+     */
+    public boolean getCoralPosition(kLiftPosition position) {
+        return (MathUtil.isNear(position.CoralPoseDeg, m_armSpark.getAbsoluteEncoder().getPosition(), .1));
     }
     
     /**

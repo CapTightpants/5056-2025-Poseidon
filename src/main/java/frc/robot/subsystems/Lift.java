@@ -7,8 +7,10 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
+import frc.robot.Constants.Setpoints.kHarpoonPosition;
 import frc.robot.Constants.Setpoints.kLiftPosition;
 
 public class Lift extends SubsystemBase {
@@ -33,8 +35,14 @@ public class Lift extends SubsystemBase {
         );
     }
 
-    public kLiftPosition getLiftPosition() {
-        return null;
+
+    /**
+     * Checks to verify that the system is in the desired position.
+     * @param position The position to check the system against.
+     * @return Returns true if the system is in position.
+     */
+    public boolean getLiftPosition(kLiftPosition position) {
+        return (MathUtil.isNear(position.LiftPose, m_liftLeftSpark.getAbsoluteEncoder().getPosition(), .08));
     }
     
     /**

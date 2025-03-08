@@ -20,6 +20,9 @@ public class CommandPositionCoral extends Command {
     public void execute() {
         m_coralArm.CoralArmPosition(m_coralPosition);
         SmartDashboard.putNumber("Coral Commanded", m_coralPosition.CoralPoseDeg);
+        if (m_coralArm.getCoralPosition(m_coralPosition)) {
+            isFinished();
+        }
     }
     
     @Override public boolean isFinished() {

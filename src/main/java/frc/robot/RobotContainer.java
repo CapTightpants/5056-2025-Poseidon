@@ -74,7 +74,7 @@ public class RobotContainer {
   public RobotContainer() {
       
     // Register auto commands
-    NamedCommands.registerCommand("startConfig", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Start));
+    NamedCommands.registerCommand("start", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Start));
     NamedCommands.registerCommand("stage1", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage1));
     NamedCommands.registerCommand("stage2", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage2));
     NamedCommands.registerCommand("stage3", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage3));

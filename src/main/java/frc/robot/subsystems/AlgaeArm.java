@@ -8,6 +8,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,6 +47,15 @@ public class AlgaeArm extends SubsystemBase {
         m_intakeVictor.set(ControlMode.PercentOutput, setpoint);;
     }
     
+    /**
+     * Checks to verify that the system is in the desired position.
+     * @param position The position to check the system against.
+     * @return Returns true if the system is in position.
+     */
+    public boolean getAlgaePosition(kLiftPosition position) {
+        return (MathUtil.isNear(position.AlgaePoseDeg, m_armSpark.getAbsoluteEncoder().getPosition(), .1));
+    }
+
     /**
      * Around around around the world
      * @param targetPosition The target in degrees for arm, "good enough" ~ Jesse

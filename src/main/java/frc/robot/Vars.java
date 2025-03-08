@@ -16,7 +16,7 @@ public final class Vars {
         public static double kHarpoonThrottle = 1;
 
         public static double kCreep = 0.5;
-        public static double kNormal = 0.75;
+        public static double kNormal = 0.7;
         public static double kBoost = 1;
         public static double kDriveThrottle = 0.75;
     }

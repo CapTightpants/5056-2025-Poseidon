@@ -20,7 +20,9 @@ public class CommandPositionLift extends Command {
     public void execute() {
         m_lift.setLiftPosition(m_position);
         SmartDashboard.putNumber("Lift Commanded", m_position.LiftPose);
-
+        if (m_lift.getLiftPosition(m_position)) {
+            isFinished();
+        }
     }
 
     @Override public boolean isFinished() {

@@ -1,6 +1,7 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.Setpoints.kLiftPosition;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.CoralArm;
@@ -23,6 +24,27 @@ public class CommandMultiPosition extends Command {
 
     @Override
     public void execute() {
+        // if ((m_position == kLiftPosition.Base) && (m_lift.getLiftPosition(m_position) != true)) {
+        //     Commands.sequence(
+        //         new CommandPositionLift(m_lift, m_position),
+        //         new CommandPositionCoral(m_coral, m_position)
+        //     );
+        //     new CommandPositionAlgae(m_algaeArm, m_position);
+        // }
+
+        // if ((m_CoralArm.getCoralPosition(kLiftPosition.Base)) && ((m_position != kLiftPosition.processor) || (m_position != kLiftPosition.Start))) {
+        //     Commands.sequence(
+        //         new CommandPositionCoral(m_coral, m_position),
+        //         new CommandPositionLift(m_lift, m_position)
+        //     );
+        //     new CommandPositionAlgae(m_algaeArm, m_position);
+        // }
+
+        // else {
+            // new CommandPositionAlgae(m_algaeArm, m_position);
+            // new CommandPositionCoral(m_coral, m_position);
+            // new CommandPositionLift(m_lift, m_position);
+        // }
         m_algaeArm.AlgaeArmPosition(m_position);
         m_coral.CoralArmPosition(m_position);
         m_lift.setLiftPosition(m_position);
