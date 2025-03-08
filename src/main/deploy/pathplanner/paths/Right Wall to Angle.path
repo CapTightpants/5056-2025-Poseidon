@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.421,
-        "y": 2.5527499999999996
+        "x": 5.391749999999999,
+        "y": 2.6404999999999994
       },
       "prevControl": {
-        "x": 5.9475,
-        "y": 1.5875
+        "x": 5.918249999999999,
+        "y": 1.6752499999999997
       },
       "nextControl": null,
       "isLocked": false,
@@ -78,7 +78,7 @@
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": {
-        "type": "race",
+        "type": "deadline",
         "data": {
           "commands": [
             {
