@@ -42,7 +42,7 @@ public class Lift extends SubsystemBase {
      * @return Returns true if the system is in position.
      */
     public boolean getLiftPosition(kLiftPosition position) {
-        return (MathUtil.isNear(position.LiftPose, m_liftLeftSpark.getAbsoluteEncoder().getPosition(), .08));
+        return (MathUtil.isNear(position.LiftPose, m_liftLeftSpark.getAbsoluteEncoder().getPosition(), .12));
     }
     
     /**

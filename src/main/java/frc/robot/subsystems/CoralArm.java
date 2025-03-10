@@ -50,7 +50,7 @@ public class CoralArm extends SubsystemBase {
      * @return Returns true if the system is in position.
      */
     public boolean getCoralPosition(kLiftPosition position) {
-        return (MathUtil.isNear(position.CoralPoseDeg, m_armSpark.getAbsoluteEncoder().getPosition(), .1));
+        return (MathUtil.isNear(position.CoralPoseDeg, m_armSpark.getAbsoluteEncoder().getPosition(), .17));
     }
     
     /**

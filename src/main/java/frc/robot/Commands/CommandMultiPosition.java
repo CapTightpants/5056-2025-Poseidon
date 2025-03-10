@@ -12,7 +12,10 @@ public class CommandMultiPosition extends Command {
     private final CoralArm m_coral;
     private final AlgaeArm m_algaeArm;
     private final kLiftPosition m_position;
-    private boolean isFinished = false;
+
+    private Command commandOutOfBase;
+    private Command commandToBase;
+    private Command commandOtherPositions;
 
     public CommandMultiPosition(Lift lift, CoralArm coralArm, AlgaeArm algaeArm, kLiftPosition position) {
         m_lift = lift;
@@ -20,43 +23,46 @@ public class CommandMultiPosition extends Command {
         m_algaeArm = algaeArm;
         m_position = position;
 
+        commandToBase = Commands.sequence(
+            new CommandPositionLift(m_lift, m_position),
+            new CommandPositionCoral(m_coral, m_position),
+            new CommandPositionAlgae(m_algaeArm, m_position)
+        );
+
+        commandOutOfBase = Commands.sequence(
+            new CommandPositionCoral(m_coral, m_position),
+            new CommandPositionAlgae(m_algaeArm, m_position),
+            new CommandPositionLift(m_lift, m_position)
+        );
+
+        commandOtherPositions = Commands.parallel(
+            new CommandPositionAlgae(m_algaeArm, m_position),
+            new CommandPositionCoral(m_coral, m_position),
+            new CommandPositionLift(m_lift, m_position)
+        );
+
         addRequirements(m_lift, m_coral, m_algaeArm);
     }
 
     @Override
     public void execute() {
         if ((m_position == kLiftPosition.Base) && (m_lift.getLiftPosition(m_position) != true)) {
-            Commands.sequence(
-                new CommandPositionLift(m_lift, m_position),
-                new CommandPositionCoral(m_coral, m_position),
-                new CommandPositionAlgae(m_algaeArm, m_position)
-            );
+            commandToBase.schedule();;
         }
-
-        if (((m_coral.getCoralPosition(kLiftPosition.Base)) || (m_algaeArm.getAlgaePosition(kLiftPosition.Base))) && ((m_position != kLiftPosition.processor) || (m_position != kLiftPosition.Start))) {
-            Commands.sequence(
-                new CommandPositionCoral(m_coral, m_position),
-                new CommandPositionAlgae(m_algaeArm, m_position),
-                new CommandPositionLift(m_lift, m_position)
-            );
+        else if (((m_coral.getCoralPosition(kLiftPosition.Base)) || (m_algaeArm.getAlgaePosition(kLiftPosition.Base))) && ((m_position != kLiftPosition.processor) || (m_position != kLiftPosition.Start))) {
+            commandOutOfBase.schedule();
         }
-
         else {
-            new CommandPositionAlgae(m_algaeArm, m_position);
-            new CommandPositionCoral(m_coral, m_position);
-            new CommandPositionLift(m_lift, m_position);
+            commandOtherPositions.schedule();
         }
+
         // m_algaeArm.AlgaeArmPosition(m_position);
         // m_coral.CoralArmPosition(m_position);
         // m_lift.setLiftPosition(m_position);
-        isFinished = true;
+        
     }
 
     @Override public boolean isFinished() {
-        return isFinished;
-    }
-
-    @Override public void end(boolean interrupted) {
-        isFinished = false;
+        return true;
     }
 }

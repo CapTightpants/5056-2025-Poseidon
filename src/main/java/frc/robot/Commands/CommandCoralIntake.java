@@ -22,5 +22,10 @@ public class CommandCoralIntake extends Command {
     public void end(boolean interrupted) {
         m_coralArm.IntakeCoral(0);
     }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
     
 }
