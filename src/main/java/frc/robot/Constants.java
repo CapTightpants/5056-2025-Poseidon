@@ -100,11 +100,11 @@ public final class Constants {
 
   public static final class Setpoints {
     public static enum kLiftPosition {
-      Start(0.75, 8.5, 1.2),
-      Base(0.75, 9.4, 0.9),
-      Stage1(2.5, 7.8, 1.2),
+      Start(0.75, 8.5, 1.5),
+      Station(0.75, 9.4, 0.9),
+      Stage1(2.5, 7.8, 1.5),
       Stage2(4.25, 7.8, 3.6),
-      Stage3(7.0, 7.8, 1.2),
+      Stage3(7.0, 7.8, 1.5),
       algae2(6.0, 8.5, 3.6),
       processor(1.0, 8.5, 3.0),
       Other(null, null, null);

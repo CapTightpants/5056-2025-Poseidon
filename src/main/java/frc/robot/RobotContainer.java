@@ -34,6 +34,7 @@ import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lift;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 // import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -68,6 +69,46 @@ public class RobotContainer {
   XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
   CommandXboxController m_operatorCommander = new CommandXboxController(OIConstants.kOperatorControllerPort);
   
+  // Commands
+    // Command commandToBase = Commands.sequence(
+    // new CommandPositionLift(m_lift, kLiftPosition.Station),
+    //     Commands.parallel(
+    //         new CommandPositionCoral(m_coralArm, kLiftPosition.Station),
+    //         new CommandPositionAlgae(m_algaeArm, kLiftPosition.Station)
+    //     )
+    // );
+
+    // Command commandStage1 = Commands.parallel(
+    //     new CommandPositionLift(m_lift, kLiftPosition.Stage1),
+    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage1),
+    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Stage1)
+    // );
+    // Command commandStage2 = Commands.parallel(
+    //     new CommandPositionLift(m_lift, kLiftPosition.Stage2),
+    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage2),
+    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Stage2)
+    // );
+    // Command commandStage3 = Commands.parallel(
+    //     new CommandPositionLift(m_lift, kLiftPosition.Stage3),
+    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage3),
+    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Stage3)
+    // );
+    // Command commandStation = Commands.parallel(
+    //     new CommandPositionLift(m_lift, kLiftPosition.Station),
+    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Station),
+    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Station)
+    // );
+    // Command commandAlgae2 = Commands.parallel(
+    //     new CommandPositionLift(m_lift, kLiftPosition.algae2),
+    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.algae2),
+    //     new CommandPositionCoral(m_coralArm, kLiftPosition.algae2)
+    // );
+    // Command commandProcessor = Commands.parallel(
+    //     new CommandPositionLift(m_lift, kLiftPosition.processor),
+    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.processor),
+    //     new CommandPositionCoral(m_coralArm, kLiftPosition.processor)
+    // );
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -78,7 +119,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("stage1", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage1));
     NamedCommands.registerCommand("stage2", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage2));
     NamedCommands.registerCommand("stage3", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage3));
-    NamedCommands.registerCommand("base", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Base));
+    NamedCommands.registerCommand("base", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station));
     NamedCommands.registerCommand("algae2", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.algae2));
     NamedCommands.registerCommand("processor", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.processor));
     NamedCommands.registerCommand("intakeCoral", new CommandCoralIntake(m_coralArm));
@@ -87,25 +128,26 @@ public class RobotContainer {
     NamedCommands.registerCommand("outtakeAlgae", new CommandAlgaeOuttake(m_algaeArm));
     
     // Configure SmartDashboard
-    SmartDashboard.putData("Algae Arm Position: Base",   new CommandPositionAlgae(m_algaeArm, kLiftPosition.Base));
-    SmartDashboard.putData("Algae Arm Position: Stage1", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage1));
-    SmartDashboard.putData("Algae Arm Position: Stage2", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage2));
-    SmartDashboard.putData("Algae Arm Position: Stage3", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage3));
-    SmartDashboard.putData("Algae Arm Position: Start",  new CommandPositionAlgae(m_algaeArm, kLiftPosition.Start));
-    SmartDashboard.putData("Coral Arm Position: Base",   new CommandPositionCoral(m_coralArm, kLiftPosition.Base));
-    SmartDashboard.putData("Coral Arm Position: Stage1", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage1));
-    SmartDashboard.putData("Coral Arm Position: Stage2", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage2));
-    SmartDashboard.putData("Coral Arm Position: Stage3", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage3));
-    SmartDashboard.putData("Coral Arm Position: Start",  new CommandPositionCoral(m_coralArm, kLiftPosition.Start));
-    SmartDashboard.putData("Lift Position: Base",   new CommandPositionLift(m_lift, kLiftPosition.Base));
-    SmartDashboard.putData("Lift Position: Stage1", new CommandPositionLift(m_lift, kLiftPosition.Stage1));
-    SmartDashboard.putData("Lift Position: Stage2", new CommandPositionLift(m_lift, kLiftPosition.Stage3));
-    SmartDashboard.putData("Lift Position: Stage3", new CommandPositionLift(m_lift, kLiftPosition.Stage3));
-    SmartDashboard.putData("Lift Position: Start",  new CommandPositionLift(m_lift, kLiftPosition.Start));
+    ShuffleboardTab commandsTab = Shuffleboard.getTab("Commands");
+    commandsTab.add("Algae Arm Position: Station", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Station));
+    commandsTab.add("Algae Arm Position: Stage1", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage1));
+    commandsTab.add("Algae Arm Position: Stage2", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage2));
+    commandsTab.add("Algae Arm Position: Stage3", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage3));
+    commandsTab.add("Algae Arm Position: Start",  new CommandPositionAlgae(m_algaeArm, kLiftPosition.Start));
+    commandsTab.add("Coral Arm Position: Station", new CommandPositionCoral(m_coralArm, kLiftPosition.Station));
+    commandsTab.add("Coral Arm Position: Stage1", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage1));
+    commandsTab.add("Coral Arm Position: Stage2", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage2));
+    commandsTab.add("Coral Arm Position: Stage3", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage3));
+    commandsTab.add("Coral Arm Position: Start",  new CommandPositionCoral(m_coralArm, kLiftPosition.Start));
+    commandsTab.add("Lift Position: Station",   new CommandPositionLift(m_lift, kLiftPosition.Station));
+    commandsTab.add("Lift Position: Stage1", new CommandPositionLift(m_lift, kLiftPosition.Stage1));
+    commandsTab.add("Lift Position: Stage2", new CommandPositionLift(m_lift, kLiftPosition.Stage3));
+    commandsTab.add("Lift Position: Stage3", new CommandPositionLift(m_lift, kLiftPosition.Stage3));
+    commandsTab.add("Lift Position: Start",  new CommandPositionLift(m_lift, kLiftPosition.Start));
     
     // for (kLiftPosition position : kLiftPosition.values()) {
         final ShuffleboardTab tab = Shuffleboard.getTab("Lift Values");
-            tab.add("Algae Base", kLiftPosition.Base.AlgaePoseDeg)
+            tab.add("Algae Station", kLiftPosition.Station.AlgaePoseDeg)
                 .withProperties(Map.of("min", 0, "max", 10))
                 .getEntry();
             tab.add("Algae Stages", kLiftPosition.Stage1.AlgaePoseDeg)
@@ -116,7 +158,7 @@ public class RobotContainer {
                 .getEntry();
 
     // }
-    // kLiftPosition.Base.AlgaePoseDeg = SmartDashboard.getNumber("Base Value: Algae", kLiftPosition.Base.AlgaePoseDeg);
+    // kLiftPosition.Station.AlgaePoseDeg = SmartDashboard.getNumber("Station Value: Algae", kLiftPosition.Station.AlgaePoseDeg);
     // kLiftPosition.Stage1.AlgaePoseDeg = SmartDashboard.getNumber("Stages Value: Algae", kLiftPosition.Stage1.AlgaePoseDeg);
     // kLiftPosition.Start.AlgaePoseDeg = SmartDashboard.getNumber("Start Value: Algae", kLiftPosition.Start.AlgaePoseDeg);
 
@@ -189,7 +231,7 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value)
         .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.algae2));
     new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Base));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station));
   }
 
 //   /**

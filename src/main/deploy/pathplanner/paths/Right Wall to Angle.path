@@ -53,7 +53,7 @@
   "eventMarkers": [
     {
       "name": "start",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.024100719424459578,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -64,7 +64,7 @@
     },
     {
       "name": "stage1",
-      "waypointRelativePos": 0.7593525179855949,
+      "waypointRelativePos": 0.4053956834532351,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

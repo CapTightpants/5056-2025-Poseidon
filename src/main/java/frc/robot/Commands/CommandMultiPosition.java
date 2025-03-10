@@ -25,13 +25,17 @@ public class CommandMultiPosition extends Command {
 
         commandToBase = Commands.sequence(
             new CommandPositionLift(m_lift, m_position),
-            new CommandPositionCoral(m_coral, m_position),
-            new CommandPositionAlgae(m_algaeArm, m_position)
+            Commands.parallel(
+                new CommandPositionCoral(m_coral, m_position),
+                new CommandPositionAlgae(m_algaeArm, m_position)
+            )
         );
 
         commandOutOfBase = Commands.sequence(
-            new CommandPositionCoral(m_coral, m_position),
-            new CommandPositionAlgae(m_algaeArm, m_position),
+            Commands.parallel(
+                new CommandPositionCoral(m_coral, m_position),
+                new CommandPositionAlgae(m_algaeArm, m_position)
+            ),
             new CommandPositionLift(m_lift, m_position)
         );
 
@@ -46,10 +50,10 @@ public class CommandMultiPosition extends Command {
 
     @Override
     public void execute() {
-        if ((m_position == kLiftPosition.Base) && (m_lift.getLiftPosition(m_position) != true)) {
-            commandToBase.schedule();;
+        if ((m_position == kLiftPosition.Station) && (!m_lift.getLiftPosition(m_position))) {
+            commandToBase.schedule();
         }
-        else if (((m_coral.getCoralPosition(kLiftPosition.Base)) || (m_algaeArm.getAlgaePosition(kLiftPosition.Base))) && ((m_position != kLiftPosition.processor) || (m_position != kLiftPosition.Start))) {
+        else if (((m_coral.getCoralPosition(kLiftPosition.Station)) || (m_algaeArm.getAlgaePosition(kLiftPosition.Station))) && ((m_position != kLiftPosition.processor) && (m_position != kLiftPosition.Start))) {
             commandOutOfBase.schedule();
         }
         else {

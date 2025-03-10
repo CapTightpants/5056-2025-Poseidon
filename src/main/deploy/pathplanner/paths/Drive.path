@@ -34,15 +34,14 @@
   "eventMarkers": [
     {
       "name": "base",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.5017985611510792,
       "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "stage1",
-      "waypointRelativePos": 0.8428057553956797,
-      "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "base"
+        }
+      }
     }
   ],
   "globalConstraints": {

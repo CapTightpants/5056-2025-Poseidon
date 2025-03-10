@@ -53,7 +53,7 @@ public class AlgaeArm extends SubsystemBase {
      * @return Returns true if the system is in position.
      */
     public boolean getAlgaePosition(kLiftPosition position) {
-        return (MathUtil.isNear(position.AlgaePoseDeg, m_armSpark.getAbsoluteEncoder().getPosition(), .17));
+        return (MathUtil.isNear(position.AlgaePoseDeg, m_armSpark.getAbsoluteEncoder().getPosition(), .1));
     }
 
     /**

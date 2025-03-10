@@ -106,7 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
     
-    // Get throttles from Shuffleboard
+    // Overide global throttles with the throttles from Shuffleboard
     Throttles.kBoost = SmartDashboard.getNumber("Boost Throttle", Throttles.kBoost);
     Throttles.kNormal = SmartDashboard.getNumber("Normal Throttle", Throttles.kNormal);
     Throttles.kCreep = SmartDashboard.getNumber("Creep Throttle", Throttles.kCreep);
@@ -217,7 +217,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
    /**
-   * Drives the robot give robot relative inputs
+   * Drives the robot given robot relative inputs
    */
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
