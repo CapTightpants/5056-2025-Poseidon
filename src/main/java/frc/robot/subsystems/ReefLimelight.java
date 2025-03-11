@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.Vars.Tuning;
+import frc.robot.Vars.Tuning.kAimingRotations;
 
 public class ReefLimelight extends SubsystemBase {
     private final DriveSubsystem m_driveSubsystem;
@@ -35,11 +36,36 @@ public class ReefLimelight extends SubsystemBase {
         double limelightX = LimelightHelpers.getTXNC("limelight-reef");
         double limelightA = LimelightHelpers.getTA("limelight-reef");
         double robotYaw = m_gyro.getRotation2d().getDegrees();
+        int aprilTagId = (int) LimelightHelpers.getFiducialID("limelight-reef");
+        kAimingRotations targetRotation;
+        switch (aprilTagId) {
+            case 7, 18 :
+                targetRotation = kAimingRotations.Front;
+                break;
+                case 6, 19 :
+                targetRotation = kAimingRotations.FrontLeft;
+                break;
+            case 11, 20:
+                targetRotation = kAimingRotations.BackLeft;
+                break;
+            case 10, 21:
+                targetRotation = kAimingRotations.Back;
+                break;
+            case 9, 22:
+                targetRotation = kAimingRotations.BackRight;
+                break;
+            case 8, 17:
+                targetRotation = kAimingRotations.FrontRight;
+                break;
+            default:
+                targetRotation = kAimingRotations.Front;
+                break;
+        }
 
         m_driveSubsystem.drive(
             (limelightA - Tuning.kAimingTargetA) * Tuning.kAimingProportionalA, 
             (limelightX - Tuning.kAimingTargetX) * Tuning.kAimingProportionalX, 
-            (robotYaw - Tuning.kAimingTargetRotation) * Tuning.kAimingProportionalRotation, false);
+            (robotYaw - targetRotation.RotationDeg) * Tuning.kAimingProportionalRotation, false);
         // pidControllerX.close();
         // pidControllerY.close();
     }

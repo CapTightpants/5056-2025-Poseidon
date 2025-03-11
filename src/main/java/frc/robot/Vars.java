@@ -39,10 +39,10 @@ public final class Vars {
             BackRight(0.0),
             FrontRight(0.0);
 
-        public final double TargetRotation;
+        public final double RotationDeg;
 
-        kAimingRotations(double TargetRotation) {
-            this.TargetRotation = TargetRotation;
+        kAimingRotations(double RotationDeg) {
+            this.RotationDeg = RotationDeg;
         }
         }
     }
