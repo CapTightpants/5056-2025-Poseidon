@@ -27,17 +27,17 @@ public final class Vars {
         public static double kAimingProportionalRotation = .05;
         public static double kAimingTargetA = .05;
         public static double kAimingTargetX = .02;
-        public static double kAimingTargetRotation = .05;
+        public static double kAimingTargetRotation = .01;
         /**
          * The target rotation in degrees for the robot to face.
          */
         public static enum kAimingRotations {
             Front(0.0),
-            FrontLeft(0.0),
-            BackLeft(0.0),
-            Back(0.0),
-            BackRight(0.0),
-            FrontRight(0.0);
+            FrontLeft(60.0),
+            BackLeft(120.0),
+            Back(180.0),
+            BackRight(-60.0),
+            FrontRight(-120.0);
 
         public final double RotationDeg;
 
