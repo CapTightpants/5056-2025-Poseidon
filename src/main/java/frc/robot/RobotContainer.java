@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.*;
+import frc.robot.Constants.DriveConstants;
 // import frc.robot.Constants.AutoConstants;
 // import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -40,9 +41,12 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 // import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import java.nio.channels.Pipe;
 // import java.util.List;
 import java.util.Map;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -57,11 +61,12 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final Pigeon2 m_gyro = new Pigeon2(SystemConstants.kGyroCanId);
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem(m_gyro);
   private final Lift m_lift = new Lift(SystemConstants.kLeftLiftCanId, SystemConstants.kRightLiftCanId);
   private final CoralArm m_coralArm = new CoralArm(SystemConstants.kCoralIntakeCanId, SystemConstants.kCoralArmCanId, SystemConstants.kCoralLimitDIO);
   private final AlgaeArm m_algaeArm = new AlgaeArm(SystemConstants.kAlgaeIntakeCanId, SystemConstants.kAlgaeArmCanId);
-  private final ReefLimelight m_reeReefLimelight = new ReefLimelight(m_robotDrive);
+  private final ReefLimelight m_reeReefLimelight = new ReefLimelight(m_robotDrive, m_gyro);
   
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -71,45 +76,6 @@ public class RobotContainer {
   XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
   CommandXboxController m_operatorCommander = new CommandXboxController(OIConstants.kOperatorControllerPort);
   
-  // Commands
-    // Command commandToBase = Commands.sequence(
-    // new CommandPositionLift(m_lift, kLiftPosition.Station),
-    //     Commands.parallel(
-    //         new CommandPositionCoral(m_coralArm, kLiftPosition.Station),
-    //         new CommandPositionAlgae(m_algaeArm, kLiftPosition.Station)
-    //     )
-    // );
-
-    // Command commandStage1 = Commands.parallel(
-    //     new CommandPositionLift(m_lift, kLiftPosition.Stage1),
-    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage1),
-    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Stage1)
-    // );
-    // Command commandStage2 = Commands.parallel(
-    //     new CommandPositionLift(m_lift, kLiftPosition.Stage2),
-    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage2),
-    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Stage2)
-    // );
-    // Command commandStage3 = Commands.parallel(
-    //     new CommandPositionLift(m_lift, kLiftPosition.Stage3),
-    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage3),
-    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Stage3)
-    // );
-    // Command commandStation = Commands.parallel(
-    //     new CommandPositionLift(m_lift, kLiftPosition.Station),
-    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.Station),
-    //     new CommandPositionCoral(m_coralArm, kLiftPosition.Station)
-    // );
-    // Command commandAlgae2 = Commands.parallel(
-    //     new CommandPositionLift(m_lift, kLiftPosition.algae2),
-    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.algae2),
-    //     new CommandPositionCoral(m_coralArm, kLiftPosition.algae2)
-    // );
-    // Command commandProcessor = Commands.parallel(
-    //     new CommandPositionLift(m_lift, kLiftPosition.processor),
-    //     new CommandPositionAlgae(m_algaeArm, kLiftPosition.processor),
-    //     new CommandPositionCoral(m_coralArm, kLiftPosition.processor)
-    // );
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

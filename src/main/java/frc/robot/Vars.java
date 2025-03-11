@@ -20,4 +20,30 @@ public final class Vars {
         public static double kBoost = 1;
         public static double kDriveThrottle = kNormal;
     }
+
+    public static class Tuning {
+        public static double kAimingProportionalA = .05;
+        public static double kAimingProportionalX = .02;
+        public static double kAimingProportionalRotation = .05;
+        public static double kAimingTargetA = .05;
+        public static double kAimingTargetX = .02;
+        public static double kAimingTargetRotation = .05;
+        /**
+         * The target rotation in degrees for the robot to face.
+         */
+        public static enum kAimingRotations {
+            Front(0.0),
+            FrontLeft(0.0),
+            BackLeft(0.0),
+            Back(0.0),
+            BackRight(0.0),
+            FrontRight(0.0);
+
+        public final double TargetRotation;
+
+        kAimingRotations(double TargetRotation) {
+            this.TargetRotation = TargetRotation;
+        }
+        }
+    }
 }

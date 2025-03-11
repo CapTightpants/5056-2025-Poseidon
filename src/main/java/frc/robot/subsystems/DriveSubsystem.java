@@ -48,10 +48,15 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final Pigeon2 m_gyro = new Pigeon2(SystemConstants.kGyroCanId, "rio");
+  private final Pigeon2 m_gyro;
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  SwerveDriveOdometry m_odometry;
+
+  /** Creates a new DriveSubsystem. */
+  public DriveSubsystem(Pigeon2 gyro) {
+    m_gyro = gyro;
+    m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
       m_gyro.getRotation2d(),
       new SwerveModulePosition[] {
@@ -61,8 +66,6 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
-  /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
 
@@ -253,8 +256,7 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @return The turn rate of the robot, in degrees per second
    */
-  @SuppressWarnings("removal")
   public double getTurnRate() {
-    return m_gyro.getAngle() * (SystemConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_gyro.getYaw().getValueAsDouble() * (SystemConstants.kGyroReversed ? -1.0 : 1.0);
   }
 }
