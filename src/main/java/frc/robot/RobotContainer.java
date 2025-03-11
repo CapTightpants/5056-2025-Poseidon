@@ -33,6 +33,7 @@ import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.ReefLimelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -60,6 +61,7 @@ public class RobotContainer {
   private final Lift m_lift = new Lift(SystemConstants.kLeftLiftCanId, SystemConstants.kRightLiftCanId);
   private final CoralArm m_coralArm = new CoralArm(SystemConstants.kCoralIntakeCanId, SystemConstants.kCoralArmCanId, SystemConstants.kCoralLimitDIO);
   private final AlgaeArm m_algaeArm = new AlgaeArm(SystemConstants.kAlgaeIntakeCanId, SystemConstants.kAlgaeArmCanId);
+  private final ReefLimelight m_reeReefLimelight = new ReefLimelight(m_robotDrive);
   
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -232,6 +234,11 @@ public class RobotContainer {
         .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.algae2));
     new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value)
         .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station));
+    new JoystickButton(m_operatorController, XboxController.Button.kStart.value)
+        .whileTrue(new RunCommand(
+            () -> m_reeReefLimelight.alignRobot(
+                false),
+            m_reeReefLimelight));
   }
 
 //   /**
