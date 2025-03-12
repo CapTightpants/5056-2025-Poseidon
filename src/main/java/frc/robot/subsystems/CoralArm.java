@@ -8,7 +8,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.Setpoints.kLiftPosition;
@@ -18,6 +21,8 @@ public class CoralArm extends SubsystemBase {
     private final SparkMax m_intakeSpark;
     private final DigitalInput m_intakeLimitSwitch;
     private final SparkClosedLoopController m_armClosedLoopController;
+    private final ShuffleboardTab m_sensorsTab = Shuffleboard.getTab("Sensors");
+    private final GenericEntry armEntry = m_sensorsTab.add("Coral Arm Encoder", 0).getEntry();
 
     public CoralArm(int intakeCANId, int armCANId, int intakeLimitSwitchID) {
         m_intakeSpark = new SparkMax(intakeCANId, MotorType.kBrushless);
@@ -59,5 +64,10 @@ public class CoralArm extends SubsystemBase {
      */
     public void CoralArmPosition(kLiftPosition targetPosition) {
         m_armClosedLoopController.setReference(targetPosition.CoralPoseDeg, ControlType.kPosition);
+   }
+
+   @Override
+   public void periodic() {
+    armEntry.setDouble(m_armSpark.getEncoder().getPosition());
    }
 }

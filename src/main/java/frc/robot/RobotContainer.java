@@ -113,22 +113,16 @@ public class RobotContainer {
     commandsTab.add("Lift Position: Stage3", new CommandPositionLift(m_lift, kLiftPosition.Stage3));
     commandsTab.add("Lift Position: Start",  new CommandPositionLift(m_lift, kLiftPosition.Start));
     
-    // for (kLiftPosition position : kLiftPosition.values()) {
-        final ShuffleboardTab tab = Shuffleboard.getTab("Lift Values");
-            tab.add("Algae Station", kLiftPosition.Station.AlgaePoseDeg)
-                .withProperties(Map.of("min", 0, "max", 10))
-                .getEntry();
-            tab.add("Algae Stages", kLiftPosition.Stage1.AlgaePoseDeg)
-                .withProperties(Map.of("min", 0, "max", 360))
-                .getEntry();
-            tab.add("Algae Start", kLiftPosition.Start.AlgaePoseDeg)
-                .withProperties(Map.of("min", 0, "max", 360))
-                .getEntry();
-
-    // }
-    // kLiftPosition.Station.AlgaePoseDeg = SmartDashboard.getNumber("Station Value: Algae", kLiftPosition.Station.AlgaePoseDeg);
-    // kLiftPosition.Stage1.AlgaePoseDeg = SmartDashboard.getNumber("Stages Value: Algae", kLiftPosition.Stage1.AlgaePoseDeg);
-    // kLiftPosition.Start.AlgaePoseDeg = SmartDashboard.getNumber("Start Value: Algae", kLiftPosition.Start.AlgaePoseDeg);
+    final ShuffleboardTab tab = Shuffleboard.getTab("Tuning");
+        tab.add("Algae Station", kLiftPosition.Station.AlgaePoseDeg)
+            .withProperties(Map.of("min", 0, "max", 10))
+            .getEntry();
+        tab.add("Algae Stages", kLiftPosition.Stage1.AlgaePoseDeg)
+            .withProperties(Map.of("min", 0, "max", 360))
+            .getEntry();
+        tab.add("Algae Start", kLiftPosition.Start.AlgaePoseDeg)
+            .withProperties(Map.of("min", 0, "max", 360))
+            .getEntry();
 
     // Configure the button bindings
     configureButtonBindings();

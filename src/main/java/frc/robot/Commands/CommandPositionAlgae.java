@@ -1,5 +1,8 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Setpoints.kHarpoonPosition;
@@ -10,6 +13,7 @@ public class CommandPositionAlgae extends Command {
     private final AlgaeArm m_algaeArm;
     private final kLiftPosition m_requestedPosition;
 
+
     public CommandPositionAlgae(AlgaeArm algaeArm, kLiftPosition position) {
         m_algaeArm = algaeArm;
         m_requestedPosition = position;
@@ -19,7 +23,6 @@ public class CommandPositionAlgae extends Command {
     @Override 
     public void execute() {
         m_algaeArm.AlgaeArmPosition(m_requestedPosition);
-        SmartDashboard.putNumber("Algae Commanded", m_requestedPosition.AlgaePoseDeg);
     }  
 
     @Override public boolean isFinished() {

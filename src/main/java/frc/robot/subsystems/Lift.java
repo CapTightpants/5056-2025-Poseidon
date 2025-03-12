@@ -8,6 +8,9 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.Setpoints.kHarpoonPosition;
@@ -17,6 +20,8 @@ public class Lift extends SubsystemBase {
     private final SparkMax m_liftLeftSpark;
     private final SparkMax m_liftRightSpark;
     private final SparkClosedLoopController m_liftClosedLoopController;
+    private final ShuffleboardTab m_sensorsTab = Shuffleboard.getTab("Sensors");
+    private final GenericEntry liftEntry = m_sensorsTab.add("Lift Encoder", 0).getEntry();
 
     public Lift(int LeftLiftCanId, int RightLiftCanId) {
         m_liftLeftSpark = new SparkMax(LeftLiftCanId, MotorType.kBrushless);
@@ -52,5 +57,10 @@ public class Lift extends SubsystemBase {
      */
     public void setLiftPosition(kLiftPosition targetPosition) {
         m_liftClosedLoopController.setReference(targetPosition.LiftPose, ControlType.kPosition);
+    }
+
+    @Override
+    public void periodic() {
+        liftEntry.setDouble(m_liftLeftSpark.getEncoder().getPosition());
     }
 }

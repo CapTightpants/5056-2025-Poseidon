@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,11 +22,13 @@ public class AlgaeArm extends SubsystemBase {
   private final SparkMax m_armSpark;
     private final VictorSPX m_intakeVictor;
     private final SparkClosedLoopController m_armClosedLoopController;
-    private final ShuffleboardTab m_sensorsDB;
+    private final ShuffleboardTab m_sensorsTab = Shuffleboard.getTab("Sensors");
+    private final GenericEntry armEntry = m_sensorsTab.add("Algae Arm Encoder", 0).getEntry();
+
     public AlgaeArm(int intakeCANId, int armCANId) {
         m_intakeVictor = new VictorSPX(intakeCANId);
         m_armSpark = new SparkMax(armCANId, MotorType.kBrushless);
-        m_sensorsDB = Shuffleboard.getTab("Sensors");
+
 
 
 
@@ -33,7 +36,7 @@ public class AlgaeArm extends SubsystemBase {
         m_armSpark.configure(Configs.DefaultNeo.neoArmConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         m_armClosedLoopController = m_armSpark.getClosedLoopController();
-        m_sensorsDB.add("AlgaeArm", 0);
+        
 
     } 
 
@@ -66,6 +69,6 @@ public class AlgaeArm extends SubsystemBase {
 
    @Override
    public void periodic() {
-    SmartDashboard.putNumber("Algae Arm", m_armSpark.getAbsoluteEncoder().getPosition());
+    armEntry.setDouble(m_armSpark.getEncoder().getPosition());
    }
 }

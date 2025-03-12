@@ -5,6 +5,7 @@ import java.util.function.ToDoubleBiFunction;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -19,6 +20,7 @@ public class ReefLimelight extends SubsystemBase {
     private final DriveSubsystem m_driveSubsystem;
     private final Pigeon2 m_gyro;
     private final ShuffleboardTab m_sensorsTab = Shuffleboard.getTab("Sensors");
+    private final GenericEntry gyroEntry = m_sensorsTab.add("Gyro", 0).getEntry();
     /**
      * 
      * @param driveSubsystem The drive subsystem used.
@@ -26,7 +28,6 @@ public class ReefLimelight extends SubsystemBase {
     public ReefLimelight(DriveSubsystem driveSubsystem, Pigeon2 gyro) {
         m_driveSubsystem = driveSubsystem;
         m_gyro = gyro;
-        m_sensorsTab.add("Rotation", 0);
     }
     
     /**
@@ -77,6 +78,6 @@ public class ReefLimelight extends SubsystemBase {
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("Rotation", m_gyro.getRotation2d().getDegrees());
+        gyroEntry.setDouble(m_gyro.getRotation2d().getDegrees());
     }
 }
