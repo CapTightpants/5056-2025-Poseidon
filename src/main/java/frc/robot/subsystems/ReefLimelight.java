@@ -40,10 +40,10 @@ public class ReefLimelight extends SubsystemBase {
         // pidControllerY.setSetpoint(3.75);
         double limelightX = LimelightHelpers.getTXNC("limelight-reef");
         double limelightA = LimelightHelpers.getTA("limelight-reef");
-        double robotYaw = m_gyro.getRotation2d().getDegrees();
         int aprilTagId = (int) LimelightHelpers.getFiducialID("limelight-reef");
+        double robotYaw = m_gyro.getRotation2d().getDegrees();
         kAimingRotations targetRotation;
-        
+
         switch (aprilTagId) {
             case 7, 18 :
                 targetRotation = kAimingRotations.Front;
@@ -69,9 +69,9 @@ public class ReefLimelight extends SubsystemBase {
         }
 
         m_driveSubsystem.drive(
-            (limelightA - Tuning.kAimingTargetA) * Tuning.kAimingProportionalA, 
-            (limelightX - Tuning.kAimingTargetX) * Tuning.kAimingProportionalX, 
-            (robotYaw - targetRotation.RotationDeg) * Tuning.kAimingProportionalRotation, false);
+            (limelightA - Tuning.kAimingTargetA) * Tuning.kAimingProportionalA,
+            (limelightX - Tuning.kAimingTargetX) * Tuning.kAimingProportionalX,
+            (targetRotation.RotationDeg - robotYaw) * Tuning.kAimingProportionalRotation, false);
         // pidControllerX.close();
         // pidControllerY.close();
     }
