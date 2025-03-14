@@ -11,10 +11,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.Setpoints.kHarpoonPosition;
+import frc.robot.Commands.CommandToggleThrottle;
 import frc.robot.Constants.Setpoints.kLiftPosition;
+import frc.robot.Vars.Throttles;
 
 public class Lift extends SubsystemBase {
     private final SparkMax m_liftLeftSpark;
@@ -22,8 +24,13 @@ public class Lift extends SubsystemBase {
     private final SparkClosedLoopController m_liftClosedLoopController;
     private final ShuffleboardTab m_sensorsTab = Shuffleboard.getTab("Sensors");
     private final GenericEntry liftEntry = m_sensorsTab.add("Lift Encoder", 0).getEntry();
+    private Command setCreepMode;
+    private Command setNormalMode;
 
     public Lift(int LeftLiftCanId, int RightLiftCanId) {
+        setCreepMode = new CommandToggleThrottle(Throttles.kCreep);
+        setNormalMode = new CommandToggleThrottle(Throttles.kNormal);
+
         m_liftLeftSpark = new SparkMax(LeftLiftCanId, MotorType.kBrushless);
         m_liftRightSpark = new SparkMax(RightLiftCanId, MotorType.kBrushless);
         m_liftClosedLoopController = m_liftLeftSpark.getClosedLoopController();
@@ -57,6 +64,16 @@ public class Lift extends SubsystemBase {
      */
     public void setLiftPosition(kLiftPosition targetPosition) {
         m_liftClosedLoopController.setReference(targetPosition.LiftPose, ControlType.kPosition);
+        switch (targetPosition) {
+            case Stage1, Stage2, Stage3, Algae2:
+                setCreepMode.schedule();
+                break;
+            case Start, Station, Processor:
+                setNormalMode.schedule();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

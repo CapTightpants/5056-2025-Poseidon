@@ -53,7 +53,7 @@ public class CommandMultiPosition extends Command {
         if ((m_position == kLiftPosition.Station) && (!m_lift.getLiftPosition(m_position))) {
             commandToBase.schedule();
         }
-        else if (((m_coral.getCoralPosition(kLiftPosition.Station)) || (m_algaeArm.getAlgaePosition(kLiftPosition.Station))) && ((m_position != kLiftPosition.processor) && (m_position != kLiftPosition.Start))) {
+        else if (((m_coral.getCoralPosition(kLiftPosition.Station)) || (m_algaeArm.getAlgaePosition(kLiftPosition.Station))) && ((m_position != kLiftPosition.Processor) && (m_position != kLiftPosition.Start))) {
             commandOutOfBase.schedule();
         }
         else {

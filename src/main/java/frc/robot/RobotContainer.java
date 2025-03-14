@@ -22,12 +22,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.*;
-import frc.robot.Constants.DriveConstants;
 // import frc.robot.Constants.AutoConstants;
 // import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 // import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.SystemConstants;
+import frc.robot.Vars.Tuning.kAimingPositions;
 import frc.robot.Constants.Setpoints.kLiftPosition;
 import frc.robot.Vars.Throttles;
 import frc.robot.subsystems.AlgaeArm;
@@ -36,19 +36,17 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ReefLimelight;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 // import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import java.nio.channels.Pipe;
 // import java.util.List;
 import java.util.Map;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -76,25 +74,49 @@ public class RobotContainer {
   XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
   CommandXboxController m_operatorCommander = new CommandXboxController(OIConstants.kOperatorControllerPort);
   
+  // Commands
+    private final Command m_CommandMultiStart = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Start);
+    private final Command m_CommandMultiStage1 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage1);
+    private final Command m_CommandMultiStage2 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage2);
+    private final Command m_CommandMultiStage3 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage3);
+    private final Command m_CommandMultiStation = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station);
+    private final Command m_CommandMultiAlgae2 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Algae2);
+    private final Command m_CommandMultiProcessor = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Processor);
+    private final Command m_CommandCoralIntake = new CommandCoralIntake(m_coralArm);
+    private final Command m_CommandCoralOuttake = new CommandCoralOuttake(m_coralArm);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-      
-    // Register auto commands
-    NamedCommands.registerCommand("start", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Start));
-    NamedCommands.registerCommand("stage1", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage1));
-    NamedCommands.registerCommand("stage2", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage2));
-    NamedCommands.registerCommand("stage3", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage3));
-    NamedCommands.registerCommand("base", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station));
-    NamedCommands.registerCommand("algae2", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.algae2));
-    NamedCommands.registerCommand("processor", new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.processor));
-    NamedCommands.registerCommand("intakeCoral", new CommandCoralIntake(m_coralArm));
-    NamedCommands.registerCommand("intakeAlgae", new CommandAlgaeIntake(m_algaeArm));
-    NamedCommands.registerCommand("outtakeCoral", new CommandCoralOuttake(m_coralArm));
-    NamedCommands.registerCommand("outtakeAlgae", new CommandAlgaeOuttake(m_algaeArm));
-    
+    // Register Named Commands
+    NamedCommands.registerCommand("intake coral", m_CommandCoralIntake);
+    NamedCommands.registerCommand("outtake coral", m_CommandCoralOuttake);
+
+    // Register Auto Triggers
+    new EventTrigger("station").onTrue(m_CommandMultiStation);
+    new EventTrigger("start").onTrue(m_CommandMultiStart);
+    new EventTrigger("stage1").onTrue(m_CommandMultiStage1);
+    new EventTrigger("stage2").onTrue(m_CommandMultiStage2);
+    new EventTrigger("align coral left").whileTrue(
+        new RunCommand(
+        () -> m_reeReefLimelight.alignRobot(
+            kAimingPositions.CoralLeft, false),
+        m_reeReefLimelight)
+        );
+    new EventTrigger("align coral right").whileTrue(
+        new RunCommand(
+        () -> m_reeReefLimelight.alignRobot(
+            kAimingPositions.CoralRight, false),
+        m_reeReefLimelight)
+        );
+    new EventTrigger("align intake").whileTrue(
+        new RunCommand(
+        () -> m_reeReefLimelight.alignRobot(
+            kAimingPositions.CoralRight, false),
+        m_reeReefLimelight)
+        );
+
     // Configure SmartDashboard
     ShuffleboardTab commandsTab = Shuffleboard.getTab("Commands");
     commandsTab.add("Algae Arm Position: Station", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Station));
@@ -140,7 +162,7 @@ public class RobotContainer {
             m_robotDrive));
         m_driverCommander.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, 0.05).whileTrue(new CommandCoralIntake(m_coralArm));
         m_driverCommander.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.05).whileTrue(new CommandAlgaeIntake(m_algaeArm));
-        m_operatorCommander.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.05).whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.processor));
+        m_operatorCommander.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.05).whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Processor));
     
     // m_lift
 
@@ -177,9 +199,9 @@ public class RobotContainer {
         .whileTrue(new CommandAlgaeOuttake(m_algaeArm));
 
     new JoystickButton(m_driverController, XboxController.Button.kLeftStick.value)
-        .whileTrue(new CommandSetBoost(Throttles.kBoost));
+        .whileTrue(new CommandHoldThrottle(Throttles.kBoost));
     new JoystickButton(m_driverController, XboxController.Button.kRightStick.value)
-        .whileTrue(new CommandSetCreep(Throttles.kCreep));
+        .whileTrue(new CommandToggleThrottle(Throttles.kCreep));
 
     // Operator Bindings
     new JoystickButton(m_operatorController, XboxController.Button.kA.value)
@@ -191,61 +213,44 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, XboxController.Button.kX.value)
         .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage3));
     new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.algae2));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Algae2));
     new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value)
         .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station));
+
     new JoystickButton(m_operatorController, XboxController.Button.kStart.value)
         .whileTrue(new RunCommand(
             () -> m_reeReefLimelight.alignRobot(
-                false),
-            m_reeReefLimelight));
+                kAimingPositions.CoralRight, true),
+                m_reeReefLimelight
+            )
+            .finallyDo(
+                () -> m_reeReefLimelight.clearFeedbackOverride()
+            )
+        );
+
+    new JoystickButton(m_operatorController, XboxController.Button.kBack.value)
+        .whileTrue(new RunCommand(
+            () -> m_reeReefLimelight.alignRobot(
+                kAimingPositions.CoralLeft, true),
+                m_reeReefLimelight
+            )
+            .finallyDo(
+                () -> m_reeReefLimelight.clearFeedbackOverride()
+            )
+        );
+
+    new JoystickButton(m_driverController, XboxController.Button.kBack.value)
+        .whileTrue(new RunCommand(
+            () -> m_reeReefLimelight.alignRobot(
+                kAimingPositions.Intake, true),
+                m_reeReefLimelight
+            )
+            .finallyDo(
+                () -> m_reeReefLimelight.clearFeedbackOverride()
+            )
+        );
+
   }
-
-//   /**
-//    * Use this to pass the autonomous command to the main {@link Robot} class.
-//    *
-//    * @return the command to run in autonomous
-//    */
-//   public Command getAutonomousCommand() {
-//     // Create config for trajectory
-//     TrajectoryConfig config = new TrajectoryConfig(
-//         AutoConstants.kMaxSpeedMetersPerSecond,
-//         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-//         // Add kinematics to ensure max speed is actually obeyed
-//         .setKinematics(DriveConstants.kDriveKinematics);
-
-//     // An example trajectory to follow. All units in meters.
-//     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-//         // Start at the origin facing the +X direction
-//         new Pose2d(0, 0, new Rotation2d(0)),
-//         // Pass through these two interior waypoints, making an 's' curve path
-//         List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-//         // End 3 meters straight ahead of where we started, facing forward
-//         new Pose2d(3, 0, new Rotation2d(0)),
-//         config);
-
-//     var thetaController = new ProfiledPIDController(
-//         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-//     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-//     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-//         exampleTrajectory,
-//         m_robotDrive::getPose, // Functional interface to feed supplier
-//         DriveConstants.kDriveKinematics,
-
-//         // Position controllers
-//         new PIDController(AutoConstants.kPXController, 0, 0),
-//         new PIDController(AutoConstants.kPYController, 0, 0),
-//         thetaController,
-//         m_robotDrive::setModuleStates,
-//         m_robotDrive);
-
-//     // Reset odometry to the starting pose of the trajectory.
-//     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-//     // Run path following command, then stop at the end.
-//     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-//   }
 
 public Command getAutonomousCommand() {
     return autoChooser.getSelected();

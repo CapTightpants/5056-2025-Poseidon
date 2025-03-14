@@ -105,8 +105,8 @@ public final class Constants {
       Stage1(2.5, 7.8, 1.5),
       Stage2(4.25, 7.8, 3.6),
       Stage3(7.0, 7.8, 1.5),
-      algae2(6.0, 8.5, 3.6),
-      processor(1.0, 8.5, 3.0),
+      Algae2(6.0, 8.5, 3.6),
+      Processor(1.0, 8.5, 3.0),
       Other(null, null, null);
 
       public final Double LiftPose;
@@ -117,19 +117,6 @@ public final class Constants {
         this.LiftPose = LiftPose;
         this.CoralPoseDeg = CoralPoseDeg;
         this.AlgaePoseDeg = AlgaePoseDeg;
-      }
-    }
-
-    public static enum kHarpoonPosition {
-      Start(0.0),
-      Deploy(0.0),
-      Intake(0.0),
-      Other(null);
-
-      public final Double Degrees;
-
-      kHarpoonPosition(Double Degrees) {
-        this.Degrees = Degrees;
       }
     }
   }

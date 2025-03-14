@@ -6,7 +6,6 @@ public final class Vars {
     public static class Positions {
         public static final class RobotStates {
             public static Setpoints.kLiftPosition kLiftState;
-            public static Setpoints.kHarpoonPosition kHarpoonState;
         }
     }
 
@@ -22,12 +21,9 @@ public final class Vars {
     }
 
     public static class Tuning {
-        public static double kAimingProportionalA = .05;
-        public static double kAimingProportionalX = .02;
-        public static double kAimingProportionalRotation = .05;
-        public static double kAimingTargetA = .05;
-        public static double kAimingTargetX = .02;
         public static double kAimingTargetRotation = .01;
+        public static double kAimingProportionalRotation = .05;
+
         /**
          * The target rotation in degrees for the robot to face.
          */
@@ -39,11 +35,29 @@ public final class Vars {
             BackRight(-60.0),
             FrontRight(-120.0);
 
-        public final double RotationDeg;
+            public final double RotationDeg;
 
-        kAimingRotations(double RotationDeg) {
-            this.RotationDeg = RotationDeg;
+            kAimingRotations(double RotationDeg) {
+                this.RotationDeg = RotationDeg;
+            }
         }
+
+        public static enum kAimingPositions {
+            CoralLeft(.05, .02, -38, 3),
+            CoralRight(.05, .02, -38, 3),
+            Intake(.05, .02, -38, 3);
+
+            public final double ProportionalA;
+            public final double ProportionalX;
+            public final double TargetA;
+            public final double TargetX;
+
+            kAimingPositions(double ProportionalA, double ProportionalX, double TargetA, double TargetX) {
+                this.ProportionalA = ProportionalA;
+                this.ProportionalX = ProportionalX;
+                this.TargetA = TargetA;
+                this.TargetX = TargetX;
+            }
         }
     }
 }

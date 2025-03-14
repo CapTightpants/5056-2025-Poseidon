@@ -1,19 +1,15 @@
 package frc.robot.subsystems;
 
-import java.util.function.ToDoubleBiFunction;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.Vars.Tuning;
+import frc.robot.Vars.Tuning.kAimingPositions;
 import frc.robot.Vars.Tuning.kAimingRotations;
 
 public class ReefLimelight extends SubsystemBase {
@@ -31,17 +27,16 @@ public class ReefLimelight extends SubsystemBase {
     }
     
     /**
+     *  While called, aligns the robot with an apriltag for scoring or intaking.
      * 
-     * @param direction The desired coral side to score; false for left, true for right.
+     * @param direction The desired coral side to score, defined by the kAimingPositions enum
+     * @param teleop If true, sends commands directly to the DriveSubsystem. If false, uses the PPOverride methods.
      */
-    public void alignRobot(boolean direction) {
-        // PIDController pidControllerX = new PIDController(.1, 0, 0);
-        // PIDController pidControllerY = new PIDController(.1, 0, 0);
-        // pidControllerX.setSetpoint(direction ? 0 : 3);
-        // pidControllerY.setSetpoint(3.75);
-        double limelightX = LimelightHelpers.getTXNC("limelight-reef");
-        double limelightA = LimelightHelpers.getTA("limelight-reef");
-        int aprilTagId = (int) LimelightHelpers.getFiducialID("limelight-reef");
+    public void alignRobot(kAimingPositions position, boolean teleop) {
+        String limelightName = position == kAimingPositions.Intake ? "limelight-intake" : "limelight-reef";
+        double limelightX = LimelightHelpers.getTXNC(limelightName);
+        double limelightA = LimelightHelpers.getTA(limelightName);
+        int aprilTagId = (int) LimelightHelpers.getFiducialID(limelightName);
         double robotYaw = m_gyro.getRotation2d().getDegrees();
         kAimingRotations targetRotation;
 
@@ -49,7 +44,7 @@ public class ReefLimelight extends SubsystemBase {
             case 7, 18 :
                 targetRotation = kAimingRotations.Front;
                 break;
-                case 6, 19 :
+            case 6, 19 :
                 targetRotation = kAimingRotations.FrontLeft;
                 break;
             case 11, 20:
@@ -69,15 +64,31 @@ public class ReefLimelight extends SubsystemBase {
                 break;
         }
 
-        m_driveSubsystem.drive(
-            (limelightA - Tuning.kAimingTargetA) * Tuning.kAimingProportionalA,
-            (limelightX - Tuning.kAimingTargetX) * Tuning.kAimingProportionalX,
-            (targetRotation.RotationDeg - robotYaw) * Tuning.kAimingProportionalRotation, false);
-        // pidControllerX.close();
-        // pidControllerY.close();
+        if (teleop) {
+            m_driveSubsystem.drive(
+                (limelightA - position.TargetA) * position.ProportionalA,
+                (limelightX - position.TargetX) * position.ProportionalX,
+                (targetRotation.RotationDeg - robotYaw) * Tuning.kAimingProportionalRotation,
+                false
+            );
+        } else {
+            PPHolonomicDriveController.overrideXFeedback(() -> {
+                return (limelightA - position.TargetA) * position.ProportionalA;
+            });
+            PPHolonomicDriveController.overrideYFeedback(() -> {
+                return (limelightX - position.TargetX) * position.ProportionalX;
+            });
+            PPHolonomicDriveController.overrideRotationFeedback(() -> {
+                return (targetRotation.RotationDeg - robotYaw) * Tuning.kAimingProportionalRotation;
+            });
+        }
     }
 
     public void periodic() {
         gyroEntry.setDouble(m_gyro.getRotation2d().getDegrees());
+    }
+
+    public void clearFeedbackOverride() {
+        PPHolonomicDriveController.clearFeedbackOverrides();
     }
 }
