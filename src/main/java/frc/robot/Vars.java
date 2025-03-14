@@ -22,7 +22,7 @@ public final class Vars {
 
     public static class Tuning {
         public static double kAimingTargetRotation = .01;
-        public static double kAimingProportionalRotation = .05;
+        public static double kAimingProportionalRotation = .02;
 
         /**
          * The target rotation in degrees for the robot to face.
@@ -43,9 +43,9 @@ public final class Vars {
         }
 
         public static enum kAimingPositions {
-            CoralLeft(.05, .02, -38, 3),
-            CoralRight(.05, .02, -38, 3),
-            Intake(.05, .02, -38, 3);
+            CoralLeft(.05, .02, -38, 0),
+            CoralRight(.05, .02, -38, -5),
+            Intake(-.03, -.03, 4.4, 0);
 
             public final double ProportionalA;
             public final double ProportionalX;

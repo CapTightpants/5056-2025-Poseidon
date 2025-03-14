@@ -68,15 +68,17 @@ public class ReefLimelight extends SubsystemBase {
             m_driveSubsystem.drive(
                 (limelightA - position.TargetA) * position.ProportionalA,
                 (limelightX - position.TargetX) * position.ProportionalX,
-                (targetRotation.RotationDeg - robotYaw) * Tuning.kAimingProportionalRotation,
+                position == kAimingPositions.Intake
+                    ? 0
+                    : (targetRotation.RotationDeg - robotYaw) * Tuning.kAimingProportionalRotation,
                 false
             );
         } else {
             PPHolonomicDriveController.overrideXFeedback(() -> {
-                return (limelightA - position.TargetA) * position.ProportionalA;
+                return (position.TargetA - limelightA) * position.ProportionalA;
             });
             PPHolonomicDriveController.overrideYFeedback(() -> {
-                return (limelightX - position.TargetX) * position.ProportionalX;
+                return (position.TargetX - limelightX) * position.ProportionalX;
             });
             PPHolonomicDriveController.overrideRotationFeedback(() -> {
                 return (targetRotation.RotationDeg - robotYaw) * Tuning.kAimingProportionalRotation;
