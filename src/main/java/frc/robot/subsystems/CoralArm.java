@@ -44,7 +44,7 @@ public class CoralArm extends SubsystemBase {
      */
     public void IntakeCoral(double setpoint) {
         m_intakeSpark.set(m_intakeLimitSwitch.get() && setpoint < 0
-        ? 0
+        ? setpoint
         : setpoint
     );
     }

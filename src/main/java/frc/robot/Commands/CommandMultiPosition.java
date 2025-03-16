@@ -10,42 +10,42 @@ import frc.robot.subsystems.Lift;
 public class CommandMultiPosition extends Command {
     private final Lift m_lift;
     private final CoralArm m_coral;
-    private final AlgaeArm m_algaeArm;
+    // private final AlgaeArm m_algaeArm;
     private final kLiftPosition m_position;
 
     private Command commandOutOfBase;
     private Command commandToBase;
     private Command commandOtherPositions;
 
-    public CommandMultiPosition(Lift lift, CoralArm coralArm, AlgaeArm algaeArm, kLiftPosition position) {
+    public CommandMultiPosition(Lift lift, CoralArm coralArm, kLiftPosition position) {
         m_lift = lift;
         m_coral = coralArm;
-        m_algaeArm = algaeArm;
+        // m_algaeArm = algaeArm;
         m_position = position;
 
         commandToBase = Commands.sequence(
             new CommandPositionLift(m_lift, m_position),
-            Commands.parallel(
-                new CommandPositionCoral(m_coral, m_position),
-                new CommandPositionAlgae(m_algaeArm, m_position)
-            )
+            new CommandPositionCoral(m_coral, m_position)
+            // Commands.parallel(
+            //     new CommandPositionAlgae(m_algaeArm, m_position)
+            // )
         );
 
         commandOutOfBase = Commands.sequence(
-            Commands.parallel(
-                new CommandPositionCoral(m_coral, m_position),
-                new CommandPositionAlgae(m_algaeArm, m_position)
-            ),
-            new CommandPositionLift(m_lift, m_position)
-        );
-
-        commandOtherPositions = Commands.parallel(
-            new CommandPositionAlgae(m_algaeArm, m_position),
+            // Commands.parallel(
+                // new CommandPositionAlgae(m_algaeArm, m_position)
+                // ),
             new CommandPositionCoral(m_coral, m_position),
             new CommandPositionLift(m_lift, m_position)
         );
 
-        addRequirements(m_lift, m_coral, m_algaeArm);
+        commandOtherPositions = Commands.parallel(
+            // new CommandPositionAlgae(m_algaeArm, m_position),
+            new CommandPositionCoral(m_coral, m_position),
+            new CommandPositionLift(m_lift, m_position)
+        );
+
+        addRequirements(m_lift, m_coral);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class CommandMultiPosition extends Command {
         if ((m_position == kLiftPosition.Station) && (!m_lift.getLiftPosition(m_position))) {
             commandToBase.schedule();
         }
-        else if (((m_coral.getCoralPosition(kLiftPosition.Station)) || (m_algaeArm.getAlgaePosition(kLiftPosition.Station))) && ((m_position != kLiftPosition.Processor) && (m_position != kLiftPosition.Start))) {
+        else if (((m_coral.getCoralPosition(kLiftPosition.Station)) || ((m_position != kLiftPosition.Processor) && (m_position != kLiftPosition.Start)))) {
             commandOutOfBase.schedule();
         }
         else {

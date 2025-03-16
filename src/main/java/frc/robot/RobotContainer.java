@@ -30,7 +30,6 @@ import frc.robot.Constants.SystemConstants;
 import frc.robot.Vars.Tuning.kAimingPositions;
 import frc.robot.Constants.Setpoints.kLiftPosition;
 import frc.robot.Vars.Throttles;
-import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Lift;
@@ -63,7 +62,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem(m_gyro);
   private final Lift m_lift = new Lift(SystemConstants.kLeftLiftCanId, SystemConstants.kRightLiftCanId);
   private final CoralArm m_coralArm = new CoralArm(SystemConstants.kCoralIntakeCanId, SystemConstants.kCoralArmCanId, SystemConstants.kCoralLimitDIO);
-  private final AlgaeArm m_algaeArm = new AlgaeArm(SystemConstants.kAlgaeIntakeCanId, SystemConstants.kAlgaeArmCanId);
+//   private final AlgaeArm= new AlgaeArm(SystemConstants.kAlgaeIntakeCanId, SystemConstants.kAlgaeArmCanId);
   private final ReefLimelight m_reeReefLimelight = new ReefLimelight(m_robotDrive, m_gyro);
   
   // The driver's controller
@@ -75,13 +74,13 @@ public class RobotContainer {
   CommandXboxController m_operatorCommander = new CommandXboxController(OIConstants.kOperatorControllerPort);
   
   // Commands
-    private final Command m_CommandMultiStart = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Start);
-    private final Command m_CommandMultiStage1 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage1);
-    private final Command m_CommandMultiStage2 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage2);
-    private final Command m_CommandMultiStage3 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage3);
-    private final Command m_CommandMultiStation = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station);
-    private final Command m_CommandMultiAlgae2 = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Algae2);
-    private final Command m_CommandMultiProcessor = new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Processor);
+    private final Command m_CommandMultiStart = new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Start);
+    private final Command m_CommandMultiStage1 = new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Stage1);
+    private final Command m_CommandMultiStage2 = new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Stage2);
+    private final Command m_CommandMultiStage3 = new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Stage3);
+    private final Command m_CommandMultiStation = new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Station);
+    private final Command m_CommandMultiAlgae2 = new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Algae2);
+    private final Command m_CommandMultiProcessor = new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Processor);
     private final Command m_CommandCoralIntake = new CommandCoralIntake(m_coralArm);
     private final Command m_CommandCoralOuttake = new CommandCoralOuttake(m_coralArm);
 
@@ -92,6 +91,16 @@ public class RobotContainer {
     // Register Named Commands
     NamedCommands.registerCommand("intake coral", m_CommandCoralIntake);
     NamedCommands.registerCommand("outtake coral", m_CommandCoralOuttake);
+    NamedCommands.registerCommand("coral arm start", new CommandPositionCoral(m_coralArm, kLiftPosition.Start));
+    NamedCommands.registerCommand("coral arm stage1", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage1));
+    NamedCommands.registerCommand("coral arm stage2", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage2));
+    NamedCommands.registerCommand("coral arm stage3", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage3));
+    NamedCommands.registerCommand("auto aim reef",
+        new RunCommand(
+            () -> m_reeReefLimelight.alignRobot(
+                kAimingPositions.CoralLeft, false),
+            m_reeReefLimelight)
+        );
 
     // Register Auto Triggers
     new EventTrigger("station").onTrue(m_CommandMultiStation);
@@ -119,11 +128,11 @@ public class RobotContainer {
 
     // Configure SmartDashboard
     ShuffleboardTab commandsTab = Shuffleboard.getTab("Commands");
-    commandsTab.add("Algae Arm Position: Station", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Station));
-    commandsTab.add("Algae Arm Position: Stage1", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage1));
-    commandsTab.add("Algae Arm Position: Stage2", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage2));
-    commandsTab.add("Algae Arm Position: Stage3", new CommandPositionAlgae(m_algaeArm, kLiftPosition.Stage3));
-    commandsTab.add("Algae Arm Position: Start",  new CommandPositionAlgae(m_algaeArm, kLiftPosition.Start));
+    // commandsTab.add("Algae Arm Position: Station", new CommandPositionAlgae kLiftPosition.Station));
+    // commandsTab.add("Algae Arm Position: Stage1", new CommandPositionAlgae kLiftPosition.Stage1));
+    // commandsTab.add("Algae Arm Position: Stage2", new CommandPositionAlgae kLiftPosition.Stage2));
+    // commandsTab.add("Algae Arm Position: Stage3", new CommandPositionAlgae kLiftPosition.Stage3));
+    // commandsTab.add("Algae Arm Position: Start",  new CommandPositionAlgae kLiftPosition.Start));
     commandsTab.add("Coral Arm Position: Station", new CommandPositionCoral(m_coralArm, kLiftPosition.Station));
     commandsTab.add("Coral Arm Position: Stage1", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage1));
     commandsTab.add("Coral Arm Position: Stage2", new CommandPositionCoral(m_coralArm, kLiftPosition.Stage2));
@@ -161,8 +170,8 @@ public class RobotContainer {
                 true),
             m_robotDrive));
         m_driverCommander.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, 0.05).whileTrue(new CommandCoralIntake(m_coralArm));
-        m_driverCommander.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.05).whileTrue(new CommandAlgaeIntake(m_algaeArm));
-        m_operatorCommander.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.05).whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Processor));
+        // m_driverCommander.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.05).whileTrue(new CommandAlgaeIntake);
+        m_operatorCommander.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.05).whileTrue(new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Processor));
     
     // m_lift
 
@@ -195,8 +204,8 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
         .whileTrue(new CommandCoralOuttake(m_coralArm));
-    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-        .whileTrue(new CommandAlgaeOuttake(m_algaeArm));
+    // new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+    //     .whileTrue(new CommandAlgaeOuttake);
 
     new JoystickButton(m_driverController, XboxController.Button.kLeftStick.value)
         .whileTrue(new CommandHoldThrottle(Throttles.kBoost));
@@ -205,19 +214,19 @@ public class RobotContainer {
 
     // Operator Bindings
     new JoystickButton(m_operatorController, XboxController.Button.kA.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Start));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Start));
     new JoystickButton(m_operatorController, XboxController.Button.kB.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage1));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Stage1));
     new JoystickButton(m_operatorController, XboxController.Button.kY.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage2));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Stage2));
     new JoystickButton(m_operatorController, XboxController.Button.kX.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Stage3));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Stage3));
     new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Algae2));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Algae2));
     new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value)
-        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, m_algaeArm, kLiftPosition.Station));
+        .whileTrue(new CommandMultiPosition(m_lift, m_coralArm, kLiftPosition.Station));
 
-    new JoystickButton(m_operatorController, XboxController.Button.kStart.value)
+    new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(new RunCommand(
             () -> m_reeReefLimelight.alignRobot(
                 kAimingPositions.CoralRight, true),
@@ -228,7 +237,7 @@ public class RobotContainer {
             )
         );
 
-    new JoystickButton(m_operatorController, XboxController.Button.kBack.value)
+    new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue(new RunCommand(
             () -> m_reeReefLimelight.alignRobot(
                 kAimingPositions.CoralLeft, true),
@@ -239,7 +248,7 @@ public class RobotContainer {
             )
         );
 
-    new JoystickButton(m_driverController, XboxController.Button.kBack.value)
+    new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(new RunCommand(
             () -> m_reeReefLimelight.alignRobot(
                 kAimingPositions.Intake, true),

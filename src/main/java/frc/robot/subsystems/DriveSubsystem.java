@@ -14,7 +14,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SystemConstants;
@@ -53,9 +56,14 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry;
 
+  // Dashboard init
+  ShuffleboardTab m_teleopTab = Shuffleboard.getTab("Teleop");
+  GenericEntry m_robotHeadingEntry;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(Pigeon2 gyro) {
     m_gyro = gyro;
+    m_robotHeadingEntry = m_teleopTab.add("Robot Heading", m_gyro.getYaw().getValueAsDouble()).getEntry();
     m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
       m_gyro.getRotation2d(),
@@ -113,6 +121,9 @@ public class DriveSubsystem extends SubsystemBase {
     Throttles.kBoost = SmartDashboard.getNumber("Boost Throttle", Throttles.kBoost);
     Throttles.kNormal = SmartDashboard.getNumber("Normal Throttle", Throttles.kNormal);
     Throttles.kCreep = SmartDashboard.getNumber("Creep Throttle", Throttles.kCreep);
+
+    // Update the gyro on the DB
+
   }
 
   /**
@@ -190,6 +201,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+
+    m_robotHeadingEntry.setDouble(m_gyro.getYaw().getValueAsDouble());
   }
 
   /**
